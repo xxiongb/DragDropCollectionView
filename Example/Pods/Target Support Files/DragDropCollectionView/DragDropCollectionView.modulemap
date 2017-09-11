@@ -1,0 +1,6 @@
+framework module DragDropCollectionView {
+  umbrella header "DragDropCollectionView-umbrella.h"
+
+  export *
+  module * { export * }
+}

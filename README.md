@@ -17,12 +17,12 @@ DragDropCollectionView is available through [CocoaPods](http://cocoapods.org). T
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'DragDropCollectionView'
+pod 'DragDropCollectionView', git=> ''
 ```
 
 ## Author
 
-cy, cyning.mason@gmail.com
+Cyning, cyning.mason@gmail.com
 
 ## License
 

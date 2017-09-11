@@ -13,6 +13,9 @@ public protocol DrapDropCollectionViewDelegate {
     @objc(dragDropCollectionViewDidMoveCellFromInitialIndexPath:toNewIndexPath:)
     func dragDropCollectionViewDidMoveCellFromInitialIndexPath(_ initialIndexPath: IndexPath, toNewIndexPath newIndexPath: IndexPath)
     
+    @objc(dragDropCollectionViewDidOperate)
+    optional func dragDropCollectionViewDidOperate();
+    
     @objc(dragDropCollectionViewDraggingDidBeginWithCellAtIndexPath:)
     optional func dragDropCollectionViewDraggingDidBeginWithCellAtIndexPath(_ indexPath: IndexPath)
     
@@ -155,6 +158,8 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
         case UIGestureRecognizerState.began:
             let indexPath = self.indexPathForItem(at: touchLocation)
             if (indexPath != nil) {
+                draggingDelegate?.dragDropCollectionViewDidOperate?()
+                
                 startWiggle()
                 longPressRecognizer.isEnabled = false;
                 commonGestureRecognizer.isEnabled = true;

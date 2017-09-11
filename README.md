@@ -17,7 +17,7 @@ DragDropCollectionView is available through [CocoaPods](http://cocoapods.org). T
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'DragDropCollectionView', git=> 'git@github.com:xxiongb/DragDropCollectionView.git'
+pod 'DragDropCollectionView', :git => 'git@github.com:xxiongb/DragDropCollectionView.git'
 ```
 
 ## Author

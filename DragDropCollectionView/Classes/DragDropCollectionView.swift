@@ -45,7 +45,7 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
     fileprivate var draggedCellIndexPath: IndexPath?
     var draggingView: UIView?
     fileprivate var touchOffsetFromCenterOfCell: CGPoint?
-    var isWiggling = false
+    open var isWiggling = false
     fileprivate let pingInterval = 0.3
     var isAutoScrolling = false
     

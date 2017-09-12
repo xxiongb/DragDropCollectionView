@@ -6,4 +6,5 @@ target 'DragDropCollectionView_Example' do
   target 'DragDropCollectionView_Tests' do
     inherit! :search_paths
   end
+
 end

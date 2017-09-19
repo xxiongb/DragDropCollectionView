@@ -13,8 +13,11 @@ public protocol DrapDropCollectionViewDelegate {
     @objc(dragDropCollectionViewDidMoveCellFromInitialIndexPath:toNewIndexPath:)
     func dragDropCollectionViewDidMoveCellFromInitialIndexPath(_ initialIndexPath: IndexPath, toNewIndexPath newIndexPath: IndexPath)
     
-    @objc(dragDropCollectionViewDidOperate)
-    optional func dragDropCollectionViewDidOperate();
+    @objc(dragDropCollectionViewDidStartOperate)
+    optional func dragDropCollectionViewDidStartOperate();
+    
+    @objc(dragDropCollectionViewDidEndOperate)
+    optional func dragDropCollectionViewDidEndOperate();
     
     @objc(dragDropCollectionViewDraggingDidBeginWithCellAtIndexPath:)
     optional func dragDropCollectionViewDraggingDidBeginWithCellAtIndexPath(_ indexPath: IndexPath)
@@ -42,6 +45,11 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
         return gestureRecognizer
     }()
     
+    var tapGestureRecognizer: UITapGestureRecognizer = {
+        let gestureRecognizer = UITapGestureRecognizer()
+        return gestureRecognizer
+    }()
+    
     fileprivate var draggedCellIndexPath: IndexPath?
     var draggingView: UIView?
     fileprivate var touchOffsetFromCenterOfCell: CGPoint?
@@ -65,11 +73,14 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
     }
     
     fileprivate func commonInit() {
-        longPressRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleLongPress(_:)))
         longPressRecognizer.isEnabled = true
+        longPressRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleLongPress(_:)))
         
-        commonGestureRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleDragRecognizer(_:)))
         commonGestureRecognizer.isEnabled = false
+        commonGestureRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleDragRecognizer(_:)))
+        
+        tapGestureRecognizer.isEnabled = false
+        tapGestureRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleTap(_:) ))
         
         self.addGestureRecognizer(longPressRecognizer)
         self.addGestureRecognizer(commonGestureRecognizer)
@@ -83,9 +94,38 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
     
     @objc(stopDragging)
     open func stopDragging(){
-        stopWiggle()
         commonGestureRecognizer.isEnabled = false
         longPressRecognizer.isEnabled = true
+        tapGestureRecognizer.isEnabled = false
+        
+        stopWiggle()
+        draggingDelegate?.dragDropCollectionViewDidEndOperate?()
+    }
+    
+    func handleTap(_ tapGestureRecognizer : UITapGestureRecognizer) {
+        let touchLocation = tapGestureRecognizer.location(in: self)
+        let indexPath = self.indexPathForItem(at: touchLocation)
+        if (indexPath == nil) {
+            stopDragging()
+        }
+    }
+    
+    func handleLongPress(_ longPressRecognizer: UILongPressGestureRecognizer) {
+        
+        let touchLocation = longPressRecognizer.location(in: self)
+        switch (longPressRecognizer.state) {
+        case UIGestureRecognizerState.began:
+            let indexPath = self.indexPathForItem(at: touchLocation)
+            if (indexPath != nil) {
+                draggingDelegate?.dragDropCollectionViewDidStartOperate?()
+                
+                startWiggle()
+                longPressRecognizer.isEnabled = false;
+                tapGestureRecognizer.isEnabled = true
+                commonGestureRecognizer.isEnabled = true;
+            }
+        default: ()
+        }
     }
     
     func handleDragRecognizer(_ gestureRecognizer: UIPanGestureRecognizer){
@@ -151,22 +191,7 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
         }
     }
     
-    func handleLongPress(_ longPressRecognizer: UILongPressGestureRecognizer) {
-        
-        let touchLocation = longPressRecognizer.location(in: self)
-        switch (longPressRecognizer.state) {
-        case UIGestureRecognizerState.began:
-            let indexPath = self.indexPathForItem(at: touchLocation)
-            if (indexPath != nil) {
-                draggingDelegate?.dragDropCollectionViewDidOperate?()
-                
-                startWiggle()
-                longPressRecognizer.isEnabled = false;
-                commonGestureRecognizer.isEnabled = true;
-            }
-        default: ()
-        }
-    }
+    
     
     
     

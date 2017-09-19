@@ -80,10 +80,11 @@ open class DragDropCollectionView: UICollectionView, UIGestureRecognizerDelegate
         commonGestureRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleDragRecognizer(_:)))
         
         tapGestureRecognizer.isEnabled = false
-        tapGestureRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleTap(_:) ))
+        tapGestureRecognizer.addTarget(self, action: #selector(DragDropCollectionView.handleTap(_:)))
         
         self.addGestureRecognizer(longPressRecognizer)
         self.addGestureRecognizer(commonGestureRecognizer)
+        self.addGestureRecognizer(tapGestureRecognizer)
         
     }
     
